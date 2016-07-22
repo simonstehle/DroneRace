@@ -11,7 +11,7 @@ function calcMovement (angle, pace){
     quadrant = -1;
     PiHalf = Math.PI/2;
 
-    for (var i=angle; i<0;i-=PiHalf) quadrant++;
+    for (var i = angle; i < 0; i -= PiHalf) quadrant++;
 
     net_angle = angle % PiHalf;
     console.log(quadrant, net_angle);
