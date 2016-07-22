@@ -34,6 +34,11 @@ function calcMovement (angle, pace){
             moveX = (Math.cos(net_angle)*pace);
             break;
     }
+    var move = new Object();
+    move.X = moveX;
+    move.Z = moveZ;
+
+    return move;
 
 
 }
