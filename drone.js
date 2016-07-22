@@ -34,6 +34,10 @@ var speedSidewards = 40;
 var speedRotationRadian = 0.05;
 var speedUpDown = 20;
 
+//Var for the glogal Angle to control the Drone after rotating around y
+var globalAngle = 0;
+
+
 scene = new THREE.Scene();
 
 aspectRatio = window.innerWidth / window.innerHeight;
@@ -138,6 +142,7 @@ function init() {
             //mesh.position.X = 3000;
             //mesh.position.Z = 200;
             //bonooneStadium.rotation.y = Math.PI*1.5;
+            bonooneStadium.boundingSphere
             bonooneStadium.scale.set(2000, 2000, 2000);
             scene.add(bonooneStadium);
 
@@ -234,9 +239,13 @@ document.addEventListener('keyup', function (event) {
             break;
         case 38:
             //Move Forward Arrow up
-            moveForward = false;
-            mesh.rotation.x = Math.PI * 0;
-            console.log(mesh.position.z);
+
+            setTimeout(function () {
+                moveForward = false;
+                mesh.rotation.x = Math.PI * 0;
+                console.log(mesh.position.z);
+            }, 100)
+
             break;
         case 40:
             //Move Backwards Arrow down
@@ -268,7 +277,11 @@ function animate() {
 
     //Handle Control of Drone by Flags
     if (moveForward){
-        marker.position.z -= speedForward;
+        var tempMoveObj = calcMovement(globalAngle, speedForward, true);
+        console.log(tempMoveObj.Z + " " + tempMoveObj.X)
+        marker.position.z += tempMoveObj.Z;
+        marker.position.x += tempMoveObj.X;
+        //marker.position.z -= speedForward;
     }
     if (moveBackward){
         marker.position.z += speedBackwards;
@@ -280,9 +293,13 @@ function animate() {
         marker.position.x += speedSidewards;
     }
     if (rotateLeft){
+        globalAngle += speedRotationRadian;
+        console.log(globalAngle);
         marker.rotation.y += speedRotationRadian;
     }
     if (rotateRight){
+        globalAngle -= speedRotationRadian;
+        console.log(globalAngle);
         marker.rotation.y -= speedRotationRadian;
     }
     if (moveDroneUp){
