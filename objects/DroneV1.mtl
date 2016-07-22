@@ -10,7 +10,7 @@ Ke 0.200000 0.184422 0.155850
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd C:\Blender\DroneV1.png
+map_Kd objects\DroneV1.png
 
 newmtl Material.001
 Ns 96.078431
