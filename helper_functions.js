@@ -26,7 +26,7 @@ function calcMovement (angle, pace, direction){
 
     if (direction==false) angle -= PiHalf*2;
 
-    for (var i = angle; i < 0; i -= PiHalf) quadrant++;
+    for (var i = angle; i >=0; i -= PiHalf) {quadrant++;}
 
     net_angle = angle % PiHalf;
     console.log(quadrant, net_angle);
