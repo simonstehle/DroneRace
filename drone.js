@@ -71,8 +71,8 @@ init();
 
 function init() {
 
-   // var ambient = new THREE.AmbientLight( 0x444444 );
-    //scene.add( ambient );
+   var ambient = new THREE.AmbientLight( 0x404040 );
+    scene.add( ambient );
 
     var directionalLight = new THREE.DirectionalLight( 0xffeedd );
     directionalLight.position.set( 0, 0, 1 ).normalize();
@@ -175,14 +175,14 @@ document.addEventListener('keydown', function (event) {
             break;
         case 68:
             //Rotate right d
+            //TODO: Hier der Algorithmusch
             rotateRight = true;
             break;
         case 38:
             //Move Forward Arrow up
             moveForward = true;
-            //TODO: Rotieren und bei Keyup wieder raus und sowas
+
             mesh.rotation.x = Math.PI * -0.05;
-            console.log(mesh.position.z);
             break;
         case 40:
             //Move Backwards Arrow down
@@ -192,12 +192,13 @@ document.addEventListener('keydown', function (event) {
         case 37:
             //Move Left arrow left
             moveLeft = true;
-            mesh.rotation.z = Math.PI * -0.05;
+            mesh.rotation.z = Math.PI * 0.05;
+
             break;
         case 39:
             //Move right arrow right
             moveRight = true;
-            mesh.rotation.z = Math.PI * 0.05;
+            mesh.rotation.z = Math.PI * -0.05;
             break;
     }})
 
@@ -229,7 +230,6 @@ document.addEventListener('keyup', function (event) {
         case 38:
             //Move Forward Arrow up
             moveForward = false;
-            //TODO: Rotieren und bei Keyup wieder raus und sowas
             mesh.rotation.x = Math.PI * 0;
             console.log(mesh.position.z);
             break;
