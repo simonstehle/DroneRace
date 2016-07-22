@@ -65,6 +65,11 @@ scene.add(marker);
 
 marker.add(camera);
 
+scene.add(createTreeAt(-500,0));
+scene.add( createTreeAt(600,-750));
+scene.add(createTreeAt(-750,-1000));
+scene.add(createTreeAt(750,-1000));
+
 init();
 
 
@@ -259,10 +264,7 @@ document.addEventListener('keyup', function (event) {
 function animate() {
     requestAnimationFrame(animate);
 
-    scene.add(createTreeAt(-500,0));
-    scene.add( createTreeAt(600,-750));
-    scene.add(createTreeAt(-750,-1000));
-    scene.add(createTreeAt(750,-1000));
+
 
     //Handle Control of Drone by Flags
     if (moveForward){
@@ -303,7 +305,6 @@ animate();
 
 //Wald
 function createTreeAt(x, z){
-
     var trunk = new THREE.Mesh(
         new THREE.CylinderGeometry(50,50,20),
         new THREE.MeshBasicMaterial({color: 0xA0522D})
@@ -318,4 +319,5 @@ function createTreeAt(x, z){
     trunk.add(top);
     trunk.position.set(x, -75, z);
     return trunk;
+
 }
