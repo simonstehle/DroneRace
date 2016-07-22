@@ -153,7 +153,7 @@ function init() {
 
 
 document.addEventListener('keydown', function (event) {
-  console.log(event.keyCode);
+  console.log("Key Pressed: " + event.keyCode);
     event.preventDefault();
 
     var code = event.keyCode;
