@@ -76,7 +76,7 @@ init();
 
 function init() {
 
-   var ambient = new THREE.AmbientLight( 0x404040 );
+   var ambient = new THREE.AmbientLight( 0xFFAAAA);
     scene.add( ambient );
 
     var directionalLight = new THREE.DirectionalLight( 0xffeedd );
