@@ -21,14 +21,23 @@
 
 function calcMovement (angle, pace, direction){
     var quadrant, net_angle, moveZ, moveX, PiHalf;
-   quadrant = -1;
+    quadrant = -1;
     PiHalf = Math.PI/2;
+
+
 
     if (direction==false) angle -= PiHalf*2;
 
+    while (angle<0) { angle+=PiHalf*4; }
+
+
     for (var i = angle; i >= 0; i -= PiHalf) {quadrant++;}
+    quadrant = quadrant % 4;
 
     net_angle = angle % PiHalf;
+
+    if (net_angle < 0) net_angle += PiHalf*4;
+
     console.log("Quadrant: " + quadrant+ " Angle: " + net_angle);
 
 
