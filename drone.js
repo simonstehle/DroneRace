@@ -106,7 +106,7 @@ function init() {
             //mesh.position.Y = -200;
             //mesh.position.X = 3000;
             //mesh.position.Z = 200;
-            mesh.rotation.y = Math.PI*1.5;
+           
             mesh.scale.set(50, 50, 50);
             marker.add(mesh);
 
