@@ -43,8 +43,8 @@ scene = new THREE.Scene();
 aspectRatio = window.innerWidth / window.innerHeight;
 camera = new THREE.PerspectiveCamera(75, aspectRatio, 1, 20000);
 //Rechtshändiges Koordinatensystem, Z ersticht einen
-camera.position.z = 500;
-camera.position.y = 200;
+camera.position.z = 320;
+camera.position.y = 100;
 
 
 renderer = new THREE.WebGLRenderer();
@@ -80,11 +80,12 @@ init();
 
 function init() {
 
-   var ambient = new THREE.AmbientLight( 0xFFAAAA);
+   var ambient = new THREE.AmbientLight( 0xAAAAAA);
     scene.add( ambient );
 
-    var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-    directionalLight.position.set( 0, 0, 1 ).normalize();
+    var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
+    directionalLight.position.set( 200, 500, 100 ).normalize();
+    directionalLight.rotateX(Math.PI*0.5);
     scene.add( directionalLight );
 
     // model
@@ -116,7 +117,7 @@ function init() {
             //mesh.position.X = 3000;
             //mesh.position.Z = 200;
            
-            mesh.scale.set(50, 50, 50);
+            mesh.scale.set(10, 10, 10);
             marker.add(mesh);
 
             //Temporary, use instead of marker
