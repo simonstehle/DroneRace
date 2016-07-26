@@ -117,7 +117,7 @@ function init() {
             //mesh.position.X = 3000;
             //mesh.position.Z = 200;
            
-            mesh.scale.set(10, 10, 10);
+            mesh.scale.set(20, 20, 20);
             marker.add(mesh);
 
             //Temporary, use instead of marker
