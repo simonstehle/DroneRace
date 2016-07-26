@@ -144,6 +144,7 @@ function init() {
             //bonooneStadium.rotation.y = Math.PI*1.5;
             bonooneStadium.boundingSphere
             bonooneStadium.scale.set(2000, 2000, 2000);
+            bonooneStadium.position.set(0,-150,0);
             scene.add(bonooneStadium);
 
 
@@ -334,7 +335,7 @@ function createTreeAt(x, z){
 
     top.position.y = 175;
     trunk.add(top);
-    trunk.position.set(x, -75, z);
+    trunk.position.set(x, 0, z);
     return trunk;
 
 }
