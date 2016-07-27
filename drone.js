@@ -364,33 +364,43 @@ function animate() {
     if (moveForward) {
 
         if (detectCollisions()) {
-        var tempMoveObj = calcMovement(globalAngle, speedForward, true);
+        var tempMoveObj = calcMovement(globalAngle, speedForward, 38);
         //console.log(tempMoveObj.Z + " " + tempMoveObj.X)
         marker.position.z += tempMoveObj.Z;
         marker.position.x += tempMoveObj.X;
         //marker.position.z -= speedForward;
     }
-        if(detectVerticalCollisions(ringBlock, yBoundaries) && hindernisse[0] === false){
+        /**if(detectVerticalCollisions(ringBlock, yBoundaries) && hindernisse[0] === false){
             gameScore++;
             console.log("Game Score: " + gameScore);
             hindernisse[0] = true;
-        }
+        }*/
 
 
     }
     if (moveBackward){
         if (detectCollisions()) {
-        var tempMoveObj = calcMovement(globalAngle, speedBackwards, false);
+        var tempMoveObj = calcMovement(globalAngle, speedBackwards, 40);
 
         marker.position.z += tempMoveObj.Z;
         marker.position.x += tempMoveObj.X;
         //marker.position.z += speedBackwards;
     }}
     if (moveLeft){
-        marker.position.x -= speedSidewards;
+        if (detectCollisions()) {
+            var tempMoveObj = calcMovement(globalAngle, speedSidewards, 37);
+            marker.position.z += tempMoveObj.Z;
+            marker.position.x += tempMoveObj.X;
+        }
+            //marker.position.x -= speedSidewards;
     }
     if (moveRight){
-        marker.position.x += speedSidewards;
+        if (detectCollisions()) {
+            var tempMoveObj = calcMovement(globalAngle, speedSidewards, 39);
+            marker.position.z += tempMoveObj.Z;
+            marker.position.x += tempMoveObj.X;
+        }
+        //marker.position.x += speedSidewards;
     }
     if (rotateLeft){
         collisionBool = true;

@@ -44,6 +44,9 @@ function calcMovement (angle, pace, direction){
         case 40:
             angle += PiHalf*2;
             break;
+        case 38:
+            angle = angle;
+            break;
     }
 
     for (var i = angle; i >= 0; i -= PiHalf) {quadrant++;}
