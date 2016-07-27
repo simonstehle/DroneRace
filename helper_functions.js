@@ -15,7 +15,9 @@
  the change of position is negative and positive and
  weather sin or cos hast to be used.
 
- Param "direction" is a boolean; true means moving forward (keyup); false means moving backwards (keydown)
+
+ Param "direction" is an int; you give me the keycode between 37 and 40,
+ so the function can determine in which direction relative to the current rotation you want to move
 
  */
 
@@ -26,10 +28,23 @@ function calcMovement (angle, pace, direction){
 
 
 
-    if (direction==false) angle -= PiHalf*2;
+
+
+    //if (direction==false) angle -= PiHalf*2;
 
     while (angle<0) { angle+=PiHalf*4; }
 
+    switch (direction) {
+        case 37:
+            angle += PiHalf;
+            break;
+        case 39:
+            angle += PiHalf*3;
+            break;
+        case 40:
+            angle += PiHalf*2;
+            break;
+    }
 
     for (var i = angle; i >= 0; i -= PiHalf) {quadrant++;}
     quadrant = quadrant % 4;
