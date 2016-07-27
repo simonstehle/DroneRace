@@ -28,7 +28,7 @@ var moveDroneUp = false;
 var moveDroneDown = false;
 
 //Declaration of Speed Variables
-var speedForward = 100;
+var speedForward = 50;
 var speedBackwards = 50;
 var speedSidewards = 40;
 var speedRotationRadian = 0.05;
@@ -36,6 +36,19 @@ var speedUpDown = 20;
 
 //Var for the glogal Angle to control the Drone after rotating around y
 var globalAngle = 0;
+
+//Vars to set the boundaries
+var boundaryBottom = -80;
+var forbiddenZones = [];
+var crash = false; //set true if someone crashes the drone
+
+//vars to score the Game
+var yBoundaries = [];
+var gameScore = 0;
+var hindernisse = [];
+hindernisse[0] = false;
+
+
 
 
 scene = new THREE.Scene();
@@ -74,6 +87,69 @@ scene.add( createTreeAt(600,-750));
 scene.add(createTreeAt(-750,-1000));
 scene.add(createTreeAt(750,-1000));
 
+
+
+//Collision detection
+
+
+//we need to set a circle arount the stadium
+var geometry = new THREE.CircleGeometry(9500, 50);
+var material = new THREE.MeshBasicMaterial( {  opacity: 0.1} );
+material.visible = false;
+var circle = new THREE.Mesh( geometry, material );
+circle.position.y = -80;
+circle.rotation.x += -Math.PI/2;
+forbiddenZones.push(circle);
+scene.add( circle );
+
+
+
+/**
+ * detect collision
+ * @returns {boolean}
+ */
+function detectCollisions() {
+    var vector = new THREE.Vector3(0,-1,0);
+    var rayCaster = new THREE.Raycaster(marker.position, vector);
+    var intersect = rayCaster.
+    intersectObjects(forbiddenZones);
+    //console.log("Länge des Intersect " + intersect.length);
+
+    if (intersect.length === 0){
+        crash =true;
+        //console.log("Crash: " +crash)
+        return false;
+    }
+    else{
+        return true;
+    }
+   // return (intersect.length === 0);
+}
+
+
+
+
+function detectVerticalCollisions(arrayObjects, yArrayObjects){
+    var vectorVert = new THREE.Vector3(0,0,-1);
+    var vertRayCaster = new THREE.Raycaster(marker.position, vectorVert);
+    var vertIntersect = vertRayCaster.intersectObjects(arrayObjects);
+
+    var yVector = new THREE.Vector3(0,-1,0);
+    var yRaycaster = new THREE.Raycaster(marker.position, yVector);
+    var yIntersect = new yRaycaster.intersectObjects(yArrayObjects);
+
+    if(vertIntersect.length > 0 && yIntersect.length > 0){
+            console.log("Heureka!");
+            return true;
+
+    }
+    else{
+
+        return false;
+    }
+
+}
+
 init();
 
 
@@ -93,7 +169,7 @@ function init() {
     var onProgress = function ( xhr ) {
         if ( xhr.lengthComputable ) {
             var percentComplete = xhr.loaded / xhr.total * 100;
-            console.log( Math.round(percentComplete, 2) + '% downloaded' );
+            //console.log( Math.round(percentComplete, 2) + '% downloaded' );
         }
     };
 
@@ -165,8 +241,10 @@ function init() {
 
 
 document.addEventListener('keydown', function (event) {
-  console.log("Key Pressed: " + event.keyCode);
+  //console.log("Key Pressed: " + event.keyCode);
     event.preventDefault();
+
+
 
     var code = event.keyCode;
 
@@ -212,7 +290,10 @@ document.addEventListener('keydown', function (event) {
             moveRight = true;
             mesh.rotation.z = Math.PI * -0.05;
             break;
-    }})
+    }
+
+
+})
 
 
 
@@ -245,7 +326,7 @@ document.addEventListener('keyup', function (event) {
             setTimeout(function () {
                 moveForward = false;
                 mesh.rotation.x = Math.PI * 0;
-                console.log(mesh.position.z);
+
             }, 100)
 
             break;
@@ -275,19 +356,36 @@ document.addEventListener('keyup', function (event) {
 function animate() {
     requestAnimationFrame(animate);
 
-
+    //Reset Drone if crashed
+    droneDidCrash();
 
     //Handle Control of Drone by Flags
-    if (moveForward){
+
+    if (moveForward) {
+
+        if (detectCollisions()) {
         var tempMoveObj = calcMovement(globalAngle, speedForward, true);
-        console.log(tempMoveObj.Z + " " + tempMoveObj.X)
+        //console.log(tempMoveObj.Z + " " + tempMoveObj.X)
         marker.position.z += tempMoveObj.Z;
         marker.position.x += tempMoveObj.X;
         //marker.position.z -= speedForward;
     }
-    if (moveBackward){
-        marker.position.z += speedBackwards;
+        if(detectVerticalCollisions(ringBlock, yBoundaries) && hindernisse[0] === false){
+            gameScore++;
+            console.log("Game Score: " + gameScore);
+            hindernisse[0] = true;
+        }
+
+
     }
+    if (moveBackward){
+        if (detectCollisions()) {
+        var tempMoveObj = calcMovement(globalAngle, speedBackwards, false);
+
+        marker.position.z += tempMoveObj.Z;
+        marker.position.x += tempMoveObj.X;
+        //marker.position.z += speedBackwards;
+    }}
     if (moveLeft){
         marker.position.x -= speedSidewards;
     }
@@ -295,20 +393,27 @@ function animate() {
         marker.position.x += speedSidewards;
     }
     if (rotateLeft){
+        collisionBool = true;
         globalAngle += speedRotationRadian;
-        console.log(globalAngle);
+        //console.log(globalAngle);
         marker.rotation.y += speedRotationRadian;
     }
     if (rotateRight){
+        collisionBool = true;
         globalAngle -= speedRotationRadian;
-        console.log(globalAngle);
+        //console.log(globalAngle);
         marker.rotation.y -= speedRotationRadian;
     }
     if (moveDroneUp){
         marker.position.y += speedUpDown;
+
     }
     if (moveDroneDown){
-        marker.position.y -= speedUpDown;
+        if (marker.position.y > boundaryBottom){
+            marker.position.y -= speedUpDown;
+            //console.log("Höhe : "+marker.position.y)
+        }
+
     }
 
 
@@ -340,3 +445,49 @@ function createTreeAt(x, z){
     return trunk;
 
 }
+
+function droneDidCrash(){
+    if (crash){
+        marker.position.set(0,0,0);
+        setTimeout(function(){
+            crash = false;
+        }, 3000);
+
+
+
+    }
+}
+
+
+/**
+ *Area where the TEst Objects are stored
+ */
+var ringBlock = [];
+
+var ringGeometry = new THREE.RingGeometry(200,250, 30);
+var ringMaterial = new THREE.MeshBasicMaterial();
+ringMaterial.side = THREE.DoubleSide;
+var flyTrueRingMesh = new THREE.Mesh(ringGeometry,ringMaterial);
+flyTrueRingMesh.position.x = 250;
+flyTrueRingMesh.position.y = 250;
+var ringBottomBorder = new THREE.BoxGeometry(500, 1, 10);
+var borderMaterial = new THREE.MeshBasicMaterial();
+borderMaterial.side = THREE.DoubleSide;
+var ringBottomMesh = new THREE.Mesh(ringBottomBorder, borderMaterial);
+ringBottomMesh.position.x = 250;
+//ringBottomMesh.position.y = 250;
+
+
+var circleGeo = new THREE.CircleGeometry(200,30);
+var circlmeMat = new THREE.MeshBasicMaterial({color: 0x69201C});
+circlmeMat.side = THREE.DoubleSide;
+var circleMesh = new THREE.Mesh(circleGeo, circlmeMat);
+circleMesh.position.x = 250;
+circleMesh.position.y = 250;
+
+ringBlock.push(circleMesh);
+forbiddenZones.push(flyTrueRingMesh);
+yBoundaries.push(ringBottomMesh);
+scene.add(circleMesh);
+scene.add(flyTrueRingMesh);
+scene.add(ringBottomMesh);
