@@ -38,7 +38,7 @@ function calcMovement (angle, pace, direction){
 
     if (net_angle < 0) net_angle += PiHalf*4;
 
-    console.log("Quadrant: " + quadrant+ " Angle: " + net_angle);
+    //console.log("Quadrant: " + quadrant+ " Angle: " + net_angle);
 
 
     switch (quadrant) {
@@ -62,7 +62,7 @@ function calcMovement (angle, pace, direction){
     var move = {};
     move.X = moveX;
     move.Z = moveZ;
-    console.log("X: " + move.X + "Z: " + move.Z);
+    //console.log("X: " + move.X + "Z: " + move.Z);
 
     return move;
 
