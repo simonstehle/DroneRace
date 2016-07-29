@@ -5,6 +5,10 @@
 /**
  * This file is for loading the drone and controls
  */
+var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+
+
 
 var scene;
 // Camera looks at the scene.
@@ -54,8 +58,7 @@ var flyOverObjects = [];
 
 scene = new THREE.Scene();
 
-aspectRatio = window.innerWidth / window.innerHeight;
-camera = new THREE.PerspectiveCamera(75, aspectRatio, 1, 30000);
+camera = new THREE.PerspectiveCamera(75, ASPECT, 1, 30000);
 
 //Rechtshändiges Koordinatensystem, Z ersticht einen
 camera.position.z = 320;
@@ -105,6 +108,45 @@ circle.rotation.x += -Math.PI/2;
 forbiddenZones.push(circle);
 scene.add( circle );
 
+
+//Texture As Camera
+textureCamera = new THREE.PerspectiveCamera( 5, ASPECT, NEAR, FAR );
+scene.add(textureCamera);
+textureCamera.position.set(5000,800,4000)
+
+screenScene = new THREE.Scene();
+
+screenCamera = new THREE.OrthographicCamera(
+    window.innerWidth  / -2, window.innerWidth  /  2,
+    window.innerHeight /  2, window.innerHeight / -2,
+    -10000, 10000 );
+screenCamera.position.set(0,0,-1);
+screenScene.add( screenCamera );
+
+var screenGeometry = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight );
+
+firstRenderTarget = new THREE.WebGLRenderTarget( 1024, 1024, { format: THREE.RGBFormat } );
+var screenMaterial = new THREE.MeshBasicMaterial( { map: firstRenderTarget } );
+
+var quad = new THREE.Mesh( screenGeometry, screenMaterial );
+// quad.rotation.x = Math.PI / 2;
+screenScene.add( quad );
+
+// final version of camera texture, used in scene.
+var planeGeometry = new THREE.CubeGeometry( 4000, 2000, 1, 1 );
+finalRenderTarget = new THREE.WebGLRenderTarget( 1024, 1024, { format: THREE.RGBFormat } );
+var planeMaterial = new THREE.MeshBasicMaterial( { map: finalRenderTarget } );
+var plane = new THREE.Mesh( planeGeometry, planeMaterial );
+plane.position.set(0,1900,-9500);
+scene.add(plane);
+// pseudo-border for plane, to make it easier to see
+var planeGeometry = new THREE.CubeGeometry( 4000, 2000, 1, 1 );
+var planeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+var plane = new THREE.Mesh( planeGeometry, planeMaterial );
+plane.position.set(0,1900,-9500);
+scene.add(plane);
+
+//End Camera as Texture
 
 
 /**
@@ -433,8 +475,15 @@ function animate() {
 
 
 
+    //camera as texture
+    renderer.render( scene, textureCamera, firstRenderTarget, true );
+    // slight problem: texture is mirrored.
+    //    solve problem by rendering (and hence mirroring) the texture again
+    // render another scene containing just a quad with the texture
+    //    and put the result into the final texture
+    renderer.render( screenScene, screenCamera, finalRenderTarget, true );
 
-
+    textureCamera.lookAt(marker.position);
 
     renderer.render(scene,camera);
 }
@@ -482,9 +531,9 @@ var ringBlock = [];
 var ringGeometry = new THREE.RingGeometry(200,250, 30);
 var ringMaterial = new THREE.MeshBasicMaterial();
 ringMaterial.side = THREE.DoubleSide;
-var flyTrueRingMesh = new THREE.Mesh(ringGeometry,ringMaterial);
-flyTrueRingMesh.position.x = 250;
-flyTrueRingMesh.position.y = 250;
+var flyTroughRingMesh = new THREE.Mesh(ringGeometry,ringMaterial);
+flyTroughRingMesh.position.x = 250;
+flyTroughRingMesh.position.y = 250;
 var flyOverBoxGeometry = new THREE.BoxGeometry(500, 1, 10);
 var flyOverBoxMaterial = new THREE.MeshBasicMaterial();
 flyOverBoxMaterial.side = THREE.DoubleSide;
@@ -496,6 +545,7 @@ flyOverBox.position.x = 250;
 var circleGeo = new THREE.CircleGeometry(200,30);
 var circlmeMat = new THREE.MeshBasicMaterial({color: 0x69201C});
 circlmeMat.side = THREE.DoubleSide;
+circlmeMat.visible = false;
 var circleMesh = new THREE.Mesh(circleGeo, circlmeMat);
 circleMesh.position.x = 250;
 circleMesh.position.y = 250;
@@ -504,8 +554,8 @@ flyTroughObjects.push(circleMesh);
 flyOverObjects.push(flyOverBox);
 
 ringBlock.push(circleMesh);
-forbiddenZones.push(flyTrueRingMesh);
-yBoundaries.push(flyTrueRingMesh);
+forbiddenZones.push(flyTroughRingMesh);
+yBoundaries.push(flyTroughRingMesh);
 scene.add(circleMesh);
-scene.add(flyTrueRingMesh);
+scene.add(flyTroughRingMesh);
 scene.add(flyOverBox);
