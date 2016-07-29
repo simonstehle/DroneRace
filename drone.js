@@ -48,13 +48,15 @@ var gameScore = 0;
 var hindernisse = [];
 hindernisse[0] = false;
 
-
+var flyTroughObjects = [];
+var flyOverObjects = [];
 
 
 scene = new THREE.Scene();
 
 aspectRatio = window.innerWidth / window.innerHeight;
-camera = new THREE.PerspectiveCamera(75, aspectRatio, 1, 20000);
+camera = new THREE.PerspectiveCamera(75, aspectRatio, 1, 30000);
+
 //Rechtshändiges Koordinatensystem, Z ersticht einen
 camera.position.z = 320;
 camera.position.y = 100;
@@ -96,6 +98,7 @@ scene.add(createTreeAt(750,-1000));
 var geometry = new THREE.CircleGeometry(9500, 50);
 var material = new THREE.MeshBasicMaterial( {  opacity: 0.1} );
 material.visible = false;
+//Stadion Circle = Allowed Zone
 var circle = new THREE.Mesh( geometry, material );
 circle.position.y = -80;
 circle.rotation.x += -Math.PI/2;
@@ -109,6 +112,8 @@ scene.add( circle );
  * @returns {boolean}
  */
 function detectCollisions() {
+    if(detectFlyThrough(flyTroughObjects, flyOverObjects))
+        console.log("Heureka!");
     var vector = new THREE.Vector3(0,-1,0);
     var rayCaster = new THREE.Raycaster(marker.position, vector);
     var intersect = rayCaster.
@@ -127,20 +132,19 @@ function detectCollisions() {
 }
 
 
+function detectFlyThrough(flyThroughObjects, flyOverObjects) {
+    var frontVector = new THREE.Vector3(0,0,-1);
+    var frontRayCaster = new THREE.Raycaster(marker.position, frontVector);
+    var frontIntersect = frontRayCaster.intersectObjects(flyThroughObjects);
 
+    var bottomVector = new THREE.Vector3(0,-1,0);
+    var bottomRayCaster = new THREE.Raycaster(marker.position, bottomVector);
+    var bottomIntersect = bottomRayCaster.intersectObjects(flyOverObjects);
+   // console.log('front' + frontIntersect.length)
+   // console.log('bottom' + bottomIntersect.length)
+    if(frontIntersect.length > 0 && bottomIntersect.length > 0){
 
-function detectVerticalCollisions(arrayObjects, yArrayObjects){
-    var vectorVert = new THREE.Vector3(0,0,-1);
-    var vertRayCaster = new THREE.Raycaster(marker.position, vectorVert);
-    var vertIntersect = vertRayCaster.intersectObjects(arrayObjects);
-
-    var yVector = new THREE.Vector3(0,-1,0);
-    var yRaycaster = new THREE.Raycaster(marker.position, yVector);
-    var yIntersect = new yRaycaster.intersectObjects(yArrayObjects);
-
-    if(vertIntersect.length > 0 && yIntersect.length > 0){
-            console.log("Heureka!");
-            return true;
+        return true;
 
     }
     else{
@@ -149,6 +153,7 @@ function detectVerticalCollisions(arrayObjects, yArrayObjects){
     }
 
 }
+
 
 init();
 
@@ -480,11 +485,11 @@ ringMaterial.side = THREE.DoubleSide;
 var flyTrueRingMesh = new THREE.Mesh(ringGeometry,ringMaterial);
 flyTrueRingMesh.position.x = 250;
 flyTrueRingMesh.position.y = 250;
-var ringBottomBorder = new THREE.BoxGeometry(500, 1, 10);
-var borderMaterial = new THREE.MeshBasicMaterial();
-borderMaterial.side = THREE.DoubleSide;
-var ringBottomMesh = new THREE.Mesh(ringBottomBorder, borderMaterial);
-ringBottomMesh.position.x = 250;
+var flyOverBoxGeometry = new THREE.BoxGeometry(500, 1, 10);
+var flyOverBoxMaterial = new THREE.MeshBasicMaterial();
+flyOverBoxMaterial.side = THREE.DoubleSide;
+var flyOverBox = new THREE.Mesh(flyOverBoxGeometry, flyOverBoxMaterial);
+flyOverBox.position.x = 250;
 //ringBottomMesh.position.y = 250;
 
 
@@ -495,9 +500,12 @@ var circleMesh = new THREE.Mesh(circleGeo, circlmeMat);
 circleMesh.position.x = 250;
 circleMesh.position.y = 250;
 
+flyTroughObjects.push(circleMesh);
+flyOverObjects.push(flyOverBox);
+
 ringBlock.push(circleMesh);
 forbiddenZones.push(flyTrueRingMesh);
-yBoundaries.push(ringBottomMesh);
+yBoundaries.push(flyTrueRingMesh);
 scene.add(circleMesh);
 scene.add(flyTrueRingMesh);
-scene.add(ringBottomMesh);
+scene.add(flyOverBox);
