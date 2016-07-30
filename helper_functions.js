@@ -2,6 +2,9 @@
  * Created by Marcel Hauser on 22.07.2016.
  *
  * This file contains functions that are called up in other files.
+ * Mainly, these function are basic game mechanics, e.g.
+ * how let the drone fly in any direction
+ * how the give the drone some inertia
  *
  * /
 
@@ -25,12 +28,6 @@ function calcMovement (angle, pace, direction){
     var quadrant, net_angle, moveZ, moveX, PiHalf;
     quadrant = -1;
     PiHalf = Math.PI/2;
-
-
-
-
-
-    //if (direction==false) angle -= PiHalf*2;
 
     while (angle<0) { angle+=PiHalf*4; }
 
@@ -84,18 +81,55 @@ function calcMovement (angle, pace, direction){
 
     return move;
 
-
 }
 
-function acceleration(vMax, aMax, vCurr) {
 
+
+
+/**
+ *
+ *  *
+ * for every moving Object (drone) this function calculates the value "Q" and "negQ" to determnie the mathematical function
+ * a(v) = aMax * Q^-v
+ * and
+ * a(v) = -1/30 * aMax * negQ^-v
+ * with the presumption that a(0)/10=a(vMax)
+ * returns q
+ */
+
+function getQ (vMax) {
+    var q = Math.pow(10, 1/vMax);
+    return q;
 }
 
-function arrowUpAcc (vMax, aMax, vCurr) {
-    var m = aMax / ((0.5*vMax)*(0.5*vMax));
-    var aCurr;
-    aCurr = - m * (vCurr - (0.5*vMax))+aMax;
-    return aCurr;
+function getNegQ (vMax) {
+    var negQ = Math.pow(10, -1/vMax);
+    return negQ;
 }
 
-function arrowDownAcc () {}
+function acc(aMax, vMax, vCurr) {
+    var q = getQ(vMax);
+    var aCurr = aMax*Math.pow(q, -vCurr);
+    if (vCurr + aCurr >= vMax) {
+        return 0;
+    } else {
+        return aCurr;
+    }
+}
+
+function negAcc(aMax, vMax, vCurr) {
+    if (vCurr === 0) {
+        return 0;
+    } else {
+        var aStart = aMax * 1/30;
+        var qStr = getNegQ(vMax);
+        var aCurr = -aStart*Math.pow(qStr, -vCurr);
+        if (vCurr + aCurr <= aStart) {
+            return vCurr;
+        } else {
+            return aCurr;
+        }
+    }
+}
+
+
