@@ -117,6 +117,7 @@ function acc(aMax, vMax, vCurr) {
     }
 }
 
+
 function negAcc(aMax, vMax, vCurr) {
     if (vCurr === 0) {
         return 0;
