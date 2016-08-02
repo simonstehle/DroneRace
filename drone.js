@@ -6,13 +6,16 @@
  * This file is for loading the drone and controls
  */
 var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+var VIEW_ANGLE = 45, ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
 
 
 
 var scene;
-// Camera looks at the scene.
-var aspectRatio;
+
+/**
+ * Camera looks at the scene.
+ * @type {THREE.Camera}
+ */
 var camera;
 // Renderer draws what the camera sees on the screen.
 var renderer;
@@ -58,7 +61,7 @@ var flyOverObjects = [];
 
 scene = new THREE.Scene();
 
-camera = new THREE.PerspectiveCamera(75, ASPECT, 1, 30000);
+camera = new THREE.PerspectiveCamera(75, ASPECT_RATIO, 1, 30000);
 
 //Rechtshändiges Koordinatensystem, Z ersticht einen
 camera.position.z = 320;
@@ -74,7 +77,7 @@ document.body.appendChild(renderer.domElement);
 
 //Pasted
 
-var container, stats, mesh, bonooneStadium;
+var container, stats, mesh, bonooneStadium, zeppelin;
 
 var mouseX = 0, mouseY = 0;
 
@@ -97,7 +100,7 @@ scene.add(createTreeAt(750,-1000));
 //Collision detection
 
 
-//we need to set a circle arount the stadium
+//we need to set a circle around the stadium
 var geometry = new THREE.CircleGeometry(9500, 50);
 var material = new THREE.MeshBasicMaterial( {  opacity: 0.1} );
 material.visible = false;
@@ -110,7 +113,7 @@ scene.add( circle );
 
 
 //Texture As Camera
-textureCamera = new THREE.PerspectiveCamera( 5, ASPECT, NEAR, FAR );
+textureCamera = new THREE.PerspectiveCamera( 5, ASPECT_RATIO, NEAR, FAR );
 scene.add(textureCamera);
 textureCamera.position.set(5000,800,4000)
 
@@ -206,6 +209,8 @@ function init() {
    var ambient = new THREE.AmbientLight( 0xAAAAAA);
     scene.add( ambient );
 
+    var testLight = new THREE.Light
+
     var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
     directionalLight.position.set( 200, 500, 100 ).normalize();
     directionalLight.rotateX(Math.PI*0.5);
@@ -226,20 +231,20 @@ function init() {
 
     var mtlLoader = new THREE.MTLLoader();
 
-    mtlLoader.load( 'objects/DroneV1.mtl', function( materials ) {
+    mtlLoader.load( 'objects/Zeppelin.mtl', function( materials ) {
 
         materials.preload();
 
         var objLoader = new THREE.OBJLoader();
         objLoader.setMaterials( materials );
 
-        objLoader.load( 'objects/DroneV1.obj', function ( object ) {
+        objLoader.load( 'objects/Zeppelin.obj', function ( object ) {
 
             mesh = object;
             //mesh.position.Y = -200;
             //mesh.position.X = 3000;
             //mesh.position.Z = 200;
-           
+            mesh.rotation.y = Math.PI*0.5;
             mesh.scale.set(20, 20, 20);
             marker.add(mesh);
 
@@ -276,6 +281,33 @@ function init() {
         }, onProgress, onError );
 
     });
+
+    mtlLoader.load( 'objects/Zeppelin.mtl', function( materials ) {
+
+        materials.preload();
+
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials( materials );
+
+        objLoader.load( 'objects/Zeppelin.obj', function ( object ) {
+
+            zeppelin = object;
+            //mesh.position.Y = -200;
+            //mesh.position.X = 3000;
+            //mesh.position.Z = 200;
+            //bonooneStadium.rotation.y = Math.PI*1.5;
+            zeppelin.boundingSphere
+            zeppelin.scale.set(500, 500, 500);
+            zeppelin.position.set(0,6000,-11000);
+            scene.add(zeppelin);
+
+
+
+        }, onProgress, onError );
+
+    });
+
+
 
 }
 
