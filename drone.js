@@ -99,13 +99,25 @@ scene.add(createTreeAt(750,-1000));
 
 //Collision detection
 
+var texture = THREE.ImageUtils.loadTexture( 'objects/Grass_1.png' );
+texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set( 20, 20 );
+
+grassMaterial = new THREE.MeshPhongMaterial( {
+    color: 0xffffff,
+    specular:0xffffff,
+    shininess: 10,
+    map: texture,
+    combine: THREE.MixOperation,
+    reflectivity: 0.05
+} )
+
 
 //we need to set a circle around the stadium
 var geometry = new THREE.CircleGeometry(9500, 50);
 var material = new THREE.MeshBasicMaterial( {  opacity: 0.1} );
-material.visible = false;
 //Stadion Circle = Allowed Zone
-var circle = new THREE.Mesh( geometry, material );
+var circle = new THREE.Mesh( geometry, grassMaterial );
 circle.position.y = -80;
 circle.rotation.x += -Math.PI/2;
 forbiddenZones.push(circle);
@@ -136,18 +148,18 @@ var quad = new THREE.Mesh( screenGeometry, screenMaterial );
 screenScene.add( quad );
 
 // final version of camera texture, used in scene.
-var planeGeometry = new THREE.CubeGeometry( 4000, 2000, 1, 1 );
+var screenGeometry = new THREE.CubeGeometry( 4000, 2000, 1, 1 );
 finalRenderTarget = new THREE.WebGLRenderTarget( 1024, 1024, { format: THREE.RGBFormat } );
-var planeMaterial = new THREE.MeshBasicMaterial( { map: finalRenderTarget } );
-var plane = new THREE.Mesh( planeGeometry, planeMaterial );
-plane.position.set(0,1900,-9500);
-scene.add(plane);
+var screenMaterial = new THREE.MeshBasicMaterial( { map: finalRenderTarget } );
+var screen = new THREE.Mesh( screenGeometry, screenMaterial );
+screen.position.set(0,1900,-9500);
+scene.add(screen);
 // pseudo-border for plane, to make it easier to see
-var planeGeometry = new THREE.CubeGeometry( 4000, 2000, 1, 1 );
-var planeMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
-var plane = new THREE.Mesh( planeGeometry, planeMaterial );
-plane.position.set(0,1900,-9500);
-scene.add(plane);
+var screenGeometry = new THREE.CubeGeometry( 4000, 2000, 1, 1 );
+var screenMaterial = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+var screen = new THREE.Mesh( screenGeometry, screenMaterial );
+screen.position.set(0,1900,-9500);
+scene.add(screen);
 
 //End Camera as Texture
 
@@ -212,7 +224,7 @@ function init() {
     var testLight = new THREE.Light
 
     var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
-    directionalLight.position.set( 200, 500, 100 ).normalize();
+    directionalLight.position.set( 200, 500, 1000 ).normalize();
     directionalLight.rotateX(Math.PI*0.5);
     scene.add( directionalLight );
 
@@ -231,20 +243,19 @@ function init() {
 
     var mtlLoader = new THREE.MTLLoader();
 
-    mtlLoader.load( 'objects/Zeppelin.mtl', function( materials ) {
+    mtlLoader.load( 'objects/DroneV1.mtl', function( materials ) {
 
         materials.preload();
 
         var objLoader = new THREE.OBJLoader();
         objLoader.setMaterials( materials );
 
-        objLoader.load( 'objects/Zeppelin.obj', function ( object ) {
+        objLoader.load( 'objects/DroneV1.obj', function ( object ) {
 
             mesh = object;
             //mesh.position.Y = -200;
             //mesh.position.X = 3000;
             //mesh.position.Z = 200;
-            mesh.rotation.y = Math.PI*0.5;
             mesh.scale.set(20, 20, 20);
             marker.add(mesh);
 
@@ -254,6 +265,7 @@ function init() {
         }, onProgress, onError );
 
     });
+
 
 
 
@@ -297,6 +309,7 @@ function init() {
             //mesh.position.Z = 200;
             //bonooneStadium.rotation.y = Math.PI*1.5;
             zeppelin.boundingSphere
+            zeppelin.rotation.y = Math.PI*0.5;
             zeppelin.scale.set(500, 500, 500);
             zeppelin.position.set(0,6000,-11000);
             scene.add(zeppelin);
