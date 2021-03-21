@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Drone Racer</title>
+
+    <style>
+        .overlayingTextBox{
+            position: absolute;
+            left: 50%;
+            top: 30%;
+            margin-right: auto;
+            width: 400px;
+        }
+
+        .rativeDiv{
+            position: relative;
+            height: 300px;
+            left: -50%;
+            top: -50%;
+            background-color: rgba(238, 238, 238, 0.5);
+            border-radius: 20px;
+        }
+
+        .hiddenStuff{
+            visibility: hidden;
+        }
+
+        .textDivResults{
+            padding: 10px;
+            text-align: center;
+        }
+
+        .buttonGroup_game{
+            text-align: center;
+            padding-top:15px;
+
+        }
+
+        .textDivResults h4{
+            font-size: 1.8em;
+        }
+
+        .info_button{
+            position: absolute;
+            bottom: 10px;
+            left:10px;
+
+        }
+
+
+
+    </style>
+</head>
+
+
+<body>
+
+<link rel='stylesheet' href="basics.css">
+
+<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css" >
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css" >
+
+
+<div class="muteTB ">
+    <div class="relativeMuteTB">
+        <div class="muteText">
+            <span class="glyphicon glyphicon-menu-left" onclick="backToHome()"></span>
+            <span class="glyphicon glyphicon-volume-off" onclick="stopMusic()" id="volumeGlyphicon"></span>
+
+
+
+            </div>
+        </div>
+    </div>
+
+<div id="overlaytext" class="overlayingTextBox hiddenStuff">
+    <div class="rativeDiv">
+        <div class="textDivResults">
+
+            <h4>Your time:        <br><span id="timeJustFlew"></span></h4>
+            <h4>Your highscore:    <br><span id="aktualBestTime"></span></h4>
+            <h4>                   <span id="resultText"></span></h4>
+
+            <div class="buttonGroup_game">
+            <button class="btn btn-primary" onclick="backToHome()">Back to menu</button>
+
+            <button class="btn btn-info" onclick="tryAgain()">Try again</button>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<button type="button" class="btn btn-default info_button" data-toggle="modal" data-target=".bs-example-modal-lg"><span class="glyphicon glyphicon-info-sign" id="helpGlyph"></span></button>
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content help_modal_content">
+            <img src="objects/wasd_ex.png" class="help_image">
+        </div>
+    </div>
+</div>
+
+<div id="WebGLCanvas"></div>
+
+
+<script src="lib/ChromeFixes.js"></script>
+<script src="lib/Three.js"></script>
+<script src="lib/Scoreboard.js"></script>
+<script src="js/cookies.js"></script>
+<script src="lib/DDSLoader.js"></script>
+<script src="lib/MTLLoader.js"></script>
+<script src="lib/OBJLoader.js"></script>
+<script src="lib/OBJLoader.js"></script>
+<script src="lib/howler.js"></script>
+
+<script src="js/music.js"></script>
+<script src="js/movement.js"></script>
+<script src="js/scoring.js"></script>
+<script src="js/basics.js"></script>
+<script src="js/event_listener.js"></script>
+<script src="js/collision.js"></script>
+<script src="js/staticObjects.js"></script>
+<script src="js/obstacles.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/drone.js"></script>
+
+<script src="js/main.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="lib/bootstrap/js/bootstrap.min.js" ></script>
+
+<script>
+
+    setGlyphiconMusicStart();
+
+    document.getElementById("aktualBestTime").innerHTML = getCookie("Level"+getCookie("ActualLevel"));
+
+    function backToHome() {
+
+        location.href ='index.html';
+        document.getElementById('overlaytext').className = "overlayingTextBox hiddenStuff";
+
+    }
+
+    function tryAgain() {
+
+        location.reload();
+        document.getElementById('overlaytext').className = "overlayingTextBox hiddenStuff";
+
+    }
+</script>
+
+</body>
+</html>
