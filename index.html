@@ -2,15 +2,232 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Avatar</title>
+    <title>DroneRacer2.1</title>
+
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-theme.min.css">
+
+
+    <script src="lib/ChromeFixes.js"></script>
+    <script src="lib/Three.js"></script>
+    <script src="lib/Scoreboard.js"></script>
+    <script src="js/cookies.js"></script>
+    <script src="lib/DDSLoader.js"></script>
+    <script src="lib/MTLLoader.js"></script>
+    <script src="lib/OBJLoader.js"></script>
+    <script src="lib/OBJLoader.js"></script>
+    <script src="lib/howler.js"></script>
+
+
+    <!--
+    <script src="Legacy/helper_functions.js"></script>
+    <script src="Legacy/drone.js"></script>
+    -->
+
+    <script src="js/music.js"></script>
+    <script src="js/movement.js"></script>
+    <script src="js/scoring.js"></script>
+    <script src="js/basics.js"></script>
+    <script src="js/event_listener.js"></script>
+    <script src="js/collision.js"></script>
+
+
+    <script src="js/staticObjects.js"></script>
+    <script src="js/obstacles.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/drone.js"></script>
+
+
+    <link rel='stylesheet' href="basics.css">
+
+    <style>
+
+
+        .levelinside {
+            padding: 10px;
+            background-color: rgba(251, 255, 48, 0.36);
+            height: 200px;
+            text-align: center;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .levelinsideText {
+            font-size: 3em;
+        }
+
+        .funnyText {
+            font-size: 1em;
+            color: rgb(89, 96, 201);
+
+        }
+
+        .timeToBeat {
+            font-size: 2.5em;
+        }
+
+        .resetrow {
+            text-align: center;
+            padding-top: -10px;
+
+        }
+
+        .resetrow span {
+            cursor: pointer;
+        }
+
+        .logorow {
+            text-align: center;
+            padding-top: 10px;
+        }
+
+        .spenenOnline {
+            width: 280px;
+        }
+
+        .answerToEverything {
+            width: 120px;;
+        }
+
+
+
+
+    </style>
 </head>
 <body>
-<script src="ChromeFixes.js"></script>
-<script src="Three.js"></script>
-<script src="DDSLoader.js"></script>
-<script src="MTLLoader.js"></script>
-<script src="OBJLoader.js"></script>
-<script src="helper_functions.js"></script>
-<script src="drone.js"></script>
+
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>DroneRace 2.1 <br> Welcome!</h1>
+        <h3>Choose a level and try to break the highscore. The next obstacle to be passed is lit green.</h3>
+        <h3>But be careful. The higher the level, the harder it gets to reach the finish line!</h3>
+    </div>
+</div>
+
+<div class="container">
+
+
+    <div class="row levelrow">
+        <div class="col-md-4 leveloutside" onclick="levelSetter(1);">
+            <div class="levelinside"><br><span class="levelinsideText">Level 1</span>
+                <br><span id="level1Time" class="timeToBeat"></span><br><span class="funnyText">This one is to get you started</span>
+            </div>
+        </div>
+
+        <div class="col-md-4 leveloutside" onclick="levelSetter(2);">
+            <div class="levelinside"><br><span class="levelinsideText">Level 2</span>
+                <br><span id="level2Time" class="timeToBeat"></span><br><span class="funnyText">Play the drone race, they said. It will be fun, they said.</span>
+            </div>
+        </div>
+
+        <div class="col-md-4 leveloutside" onclick="levelSetter(3);">
+            <div class="levelinside"><br><span class="levelinsideText">Level 3</span>
+                <br><span id="level3Time" class="timeToBeat"></span><br><span class="funnyText">Only almost as hard as Level 2.</span>
+            </div>
+        </div>
+    </div>
+    <div class="row resetrow">
+        <div class="col-md-4"><h2><span class="glyphicon glyphicon-remove" aria-hidden="true"
+                                        onclick="resetScores('Level1')"></span></h2></div>
+        <div class="col-md-4"><h2><span class="glyphicon glyphicon-remove" aria-hidden="true"
+                                        onclick="resetScores('Level2')"></span></h2></div>
+        <div class="col-md-4"><h2><span class="glyphicon glyphicon-remove" aria-hidden="true"
+                                        onclick="resetScores('Level3')"></span></h2></div>
+
+
+    </div>
+
+    <div class="row logorow">
+        <div class="col-md-4"><a href="https://github.com/simonstehle/DroneRace2.1" target="_blank"><img
+                src="objects/gitHub-download-button.png"></a></div>
+        <div class="col-md-4"><a href="http://www.sos-kinderdorf.de/portal/spende/einmalig-spenden/online-spenden"
+                                 target="_blank"><img src="objects/donations.jpg" class="spenenOnline"></a></div>
+        <div class="col-md-4"><a href="https://de.wikipedia.org/wiki/42_(Antwort)" target="_blank"><img
+                src="objects/220px-Answer_to_Life.png" class="answerToEverything"></a></div>
+
+    </div>
+
+    <div class="row logorow">
+        <div class="col-md-4"> <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">Get Help</button></div>
+
+    </div>
+
+
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content help_modal_content">
+                <img src="objects/wasd_ex.png" class="help_image">
+            </div>
+        </div>
+    </div>
+
+</div><!--End of Container -->
+
+<div class="muteTB ">
+    <div class="relativeMuteTB">
+        <div class="muteText">
+            <span class="glyphicon glyphicon-volume-off" onclick="stopMusic()" id="volumeGlyphicon"></span>
+
+        </div>
+    </div>
+</div>
+
+
 </body>
+
+<script>
+
+    setMainSound('objects/levels_reverse.mp3');
+    setGlyphiconMusicStart();
+    if (startPlaying)
+        toogleMusic(true);
+
+    function levelSetter(number) {
+
+        setCookie("ActualLevel", number, 100);
+        location.href = 'game.html';
+    }
+
+    updateTimesToBeat();
+
+    function updateTimesToBeat() {
+        var level1temp = document.getElementById("level1Time").innerHTML = getCookie("Level1");
+        var level2temp = document.getElementById("level2Time").innerHTML = getCookie("Level2");
+        var level3temp = document.getElementById("level1Time").innerHTML = getCookie("Level3");
+
+        if (level1temp >= 0 && level1temp != "") {
+            document.getElementById("level1Time").innerHTML = "Highscore: " + level1temp + " s";
+        } else {
+            document.getElementById("level1Time").innerHTML = "No Highscore yet.";
+        }
+
+        if (level2temp >= 0 && level2temp != "") {
+            document.getElementById("level2Time").innerHTML = "Highscore: " + level2temp + " s";
+        } else {
+            document.getElementById("level2Time").innerHTML = "No Highscore yet.";
+        }
+
+        if (level3temp >= 0 && level3temp != "") {
+            document.getElementById("level3Time").innerHTML = "Highscore: " + level3temp + " s";
+        } else {
+            document.getElementById("level3Time").innerHTML = "No Highscore yet.";
+        }
+    }
+
+
+    function resetScores(level) {
+
+        setCookie(level, "", 100);
+        updateTimesToBeat();
+
+    }
+
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="lib/bootstrap/js/bootstrap.min.js"></script>
 </html>
